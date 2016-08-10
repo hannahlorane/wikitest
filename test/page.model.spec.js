@@ -90,7 +90,7 @@ describe ("the Page model", function () {
                       });
                   };
 
-  describe("data validation", function() {
+  describe("Checks the data validator", function() {
 
     beforeEach(function(done) {
       correctPage = pageCreator();
@@ -99,7 +99,7 @@ describe ("the Page model", function () {
     });
 
     describe("", function() {
-      it("Adds a page if all properties are valid", function() {
+      it("All page properties should be valid", function() {
         expect(goodValidationResult).to.equal(null);
       });
     });
@@ -110,7 +110,7 @@ describe ("the Page model", function () {
         validator();
       });
 
-      it("Title is not a null value", function() {
+      it("Title should be invalid", function() {
         expect(goodValidationResult).to.not.equal(null);
       });
     });
@@ -121,7 +121,7 @@ describe ("the Page model", function () {
         validator();
       });
 
-      it("urlTitle is a null value", function() {
+      it("urlTitle should be invalid", function() {
         expect(goodValidationResult).not.to.equal(null);
       });
     });
@@ -132,7 +132,7 @@ describe ("the Page model", function () {
         validator();
       });
 
-      it("checks whether content is null", function() {
+      it("Content should be invalid", function() {
         expect(goodValidationResult).not.to.equal(null);
       });
     });

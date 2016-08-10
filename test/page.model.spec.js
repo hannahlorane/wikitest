@@ -122,7 +122,7 @@ describe ("the Page model", function () {
       });
 
       it("urlTitle should be invalid", function() {
-        expect(goodValidationResult).not.to.equal(null);
+        expect(goodValidationResult).to.not.equal(null);
       });
     });
 
@@ -133,7 +133,7 @@ describe ("the Page model", function () {
       });
 
       it("Content should be invalid", function() {
-        expect(goodValidationResult).not.to.equal(null);
+        expect(goodValidationResult).to.not.equal(null);
       });
     });
 

@@ -1,9 +1,19 @@
 var models = require('../models/index');
+var Page = models.Page;
+var User = models.User;
 var Sequelize = require('sequelize');
 var chai = require('chai');
 var expect = chai.expect;
 
 describe ("the Page model", function () {
+
+  before(function () {
+    return User.sync({force:true})
+    .then(function() {
+      return Page.sync({force:true});
+    });
+  });
+
   describe("page properties", function () {
     it("is hooked up to a real postgress db/table");
     it("has a title");
@@ -30,7 +40,7 @@ describe ("the Page model", function () {
   //   beforeEach(function (done) {
   //     pageCreator()
   //   })
-  //   .then(() => done())
+  //   .then(function() { done(); } )
   //   .catch(done);
   // });
   //   it("appends /wiki/ to the route");
@@ -38,30 +48,111 @@ describe ("the Page model", function () {
   // });
 
   function pageCreator() {
-    return models.Page.build({
+    return Page.build({
+      title: "test test",
       urlTitle:"test/test",
       content: "vides ut stet nive candida",
       tags: ["Latin", "Augustus"]
     });
-  };
+  }
 
-  var p;
-  var sim;
+
+  var createdPage;
+  var foundSimilarArray;
   describe("instanceMethods", function () {
 
-    before(function () {
-      return Page.sync();
+    beforeEach(function (done) {
+      createdPage = pageCreator();
+      createdPage.findSimilar()
+        .then(function(result) {
+          foundSimilarArray = result;
+          console.log("findSim result: ", foundSimilarArray);
+          done();
+        });
     });
 
-    beforeEach(function (done) {
-      p = pageCreator();
-      sim = p.findSimilar();
-      console.log(sim);
+    it("is not returned by its own findsimilar", function () {
+      expect(foundSimilarArray.indexOf(createdPage.id)).to.equal(-1);
+    });
+
+    it("gets pages with shared tags");
+
+  });
+
+
+  var correctPage;
+  var goodValidationResult;
+
+  var validator = function() {
+                    correctPage.validate()
+                      .then(function(result) {
+                        goodValidationResult = result;
+                      });
+                  };
+
+  describe("data validation", function() {
+
+    beforeEach(function(done) {
+      correctPage = pageCreator();
+      validator();
       done();
     });
-    it("is not returned by its own findsimilar", function (done) {
-      expect(sim.indexOf(p.id)).to.equal(-1);
+
+    describe("", function() {
+      it("Adds a page if all properties are valid", function() {
+        expect(goodValidationResult).to.equal(null);
+      });
     });
-    it("gets pages with shared tags");
+
+    describe("", function() {
+      before(function() {
+        correctPage.title = null;
+        validator();
+      });
+
+      it("Title is not a null value", function() {
+        expect(goodValidationResult).to.not.equal(null);
+      });
+    });
+
+    describe("", function() {
+      before(function() {
+        correctPage.urlTitle = null;
+        validator();
+      });
+
+      it("urlTitle is a null value", function() {
+        expect(goodValidationResult).not.to.equal(null);
+      });
+    });
+
+    describe("", function() {
+      before(function() {
+        correctPage.content = null;
+        validator();
+      });
+
+      it("checks whether content is null", function() {
+        expect(goodValidationResult).not.to.equal(null);
+      });
+    });
+
+    // describe("", function() {
+      // before(function() {
+      //   correctPage.status = null;
+      // });
+
+      // it("Type of ENUM is (Sequelize) Enumerable", function() {
+      // });
+    // });
+
+    // describe("", function() {
+      // before(function() {
+      //   correctPage.tags = null;
+      // });
+
+      // it("Type of Tags is 'Array'", function() {
+      // });
+    // });
   });
 });
